@@ -1,4 +1,4 @@
-# # 7Semi-HX711-Arduino-Library
+# 7Semi-HX711-Arduino-Library
 
 This Arduino library provides support for the **7Semi HX711 Load Cell Amplifier Module**, a 24-bit ADC designed specifically for weigh-scale and pressure sensor applications. It enables accurate and high-resolution measurement from load cells using a digital interface.
 
