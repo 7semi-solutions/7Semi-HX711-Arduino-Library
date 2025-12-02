@@ -20,24 +20,46 @@
  */
 #include <7semi_HX711.h>
 
-// HX711 pin configuration
-const int dataPin = 6;   // DOUT
-const int clockPin = 7;  // SCK
-float scale = 230.00;    // Calibration factor (raw units per gram)
+/**
+ * Pin configuration
+ * - HX_DOUT_PIN: HX711 DOUT pin
+ * - HX_SCK_PIN : HX711 SCK pin
+ */
+const int HX_DOUT_PIN = 4;
+const int HX_SCK_PIN  = 5;
 
-HX711_7semi loadcell(dataPin, clockPin);
+/**
+ * Calibration factor
+ * - Value is raw units per gram
+ * - Adjust after calibration for your load cell
+ */
+float CALIBRATION_FACTOR = 230.0f;
+
+/**
+ * HX711 instance
+ * - Uses data and clock pins
+ */
+HX711_7semi scale(HX_DOUT_PIN, HX_SCK_PIN);
 
 void setup() {
-  Serial.begin(9600);
-  loadcell.begin();
+  Serial.begin(115200);
 
-  loadcell.setScale(scale);  // Set scale factor
-  loadcell.tare();           // Calibrate zero (tare)
-  Serial.println("Tare done. Starting weight measurement...");
+  scale.begin();
+  scale.setGain(HX711_GAIN_128);   // fixed: use correct enum
+  scale.setScale(CALIBRATION_FACTOR);
+
+  Serial.println("HX711 simple example");
+  Serial.println("Taring... remove any load");
+  delay(2000);
+
+  scale.tare();   /* uses default sample count */
+
+  Serial.println("Tare done.");
+  Serial.println("Place weight on the load cell.");
 }
-
 void loop() {
-  float weight = loadcell.getWeight();  // Get weight in grams
+  float weight = scale.getWeight(5);  /* specify averaging for smoother reading */
+
   Serial.print("Weight: ");
   Serial.print(weight, 2);
   Serial.println(" g");
